@@ -1,0 +1,201 @@
+---
+title: "ASPI - Analysis of Symmetry of Parasitic Infections"
+author: "Matt Wayland"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette 
+bibliography: aspi.bib
+vignette: >
+  %\VignetteIndexEntry{ASPI - Analysis of Symmetry of Parasitic Infections}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+When parasites invade paired structures of their host non-randomly, the resulting asymmetry may have both pathological and ecological significance. ASPI has been developed to facilitate the detection and visualization of asymmetric infections. ASPI can detect both consistent bias towards one side, and inconsistent bias in which the left side is favored in some hosts and the right in others. In this vignette ASPI is demonstrated on both observed and simulated parasite distributions. The first step is to load the aspi library:
+
+```{r}
+library(aspi)
+```
+
+##Detection of deviation from symmetry
+
+###Replicated G-tests of goodness-of-fit
+Replicated G-tests of goodness-of-fit [@biometry] provide a comprehensive analysis of deviations from bilateral symmetry. This procedure computes four different G-statistics:
+
+* **Total G** - tests null hypothesis that overall the parasite distributions in all individual hosts do not depart from symmetry.
+* **Pooled G** - evaluates the null hypothesis that the ratio of the total number of parasites from each side does not differ from symmetry.
+* **Heterogeneity G** - examines the null hypothesis that the left:right ratios are the same in all individual hosts. 
+* **Individual G** - used to identify which individual hosts have asymmetrical parasite distributions.
+
+###Binomial exact test
+G-tests involve logarithmic transformation and so cannot be applied to counts of zero. Moreover, G-tests are not recommended when counts are below 10. For this situation, binomial exact tests are provided as an alternative, but are limited to testing two null hypotheses:
+
+* the ratio of the total number of parasites on each side doesn't differ from 1:1 (equivalent to the pooled G-test);
+* the distribution of parasites in an individual host is symmetrical.
+
+##Trematode infections in fish eyes
+*Diplostomum* spp. (Trematoda) are common parasites of freshwater fishes. Here we use two datasets describing the distribution of *Diplostomum* spp. metacercariae in the eyes of fifty ruffe, *Gymnocephalus cernuus*. 
+
+### Infections of the eye excluding lens
+The first dataset comprises the numbers of metacercariae found in each eye, excluding the lens (i.e. the choroid, retina and humors). The dataset is formatted as a data.frame with two columns; the first column is the number of parasites found in the left eye and the 2nd column is the number of parasites found in the right eye. Here are the data for the first ten hosts:
+```{r}
+head(diplostomum_eyes_excl_lenses, 10)
+```
+
+The row.names are host IDs. To detect bilateral asymmetry we apply replicated G-tests of goodness-of-fit:
+```{r}
+results <- g.test(diplostomum_eyes_excl_lenses)
+```
+
+First we inspect the pooled, heterogeneity and total G-statistics:
+```{r}
+results$summary
+```
+
+The total G-test statistic is highly significant and so the null hypothesis of overall symmetry can be rejected. The pooled G-test (p-value = 0.004) suggests that the total number of parasites from each side differs from symmetry. Let's calculate the total number of parasites found on each side:
+```{r}
+#total number of parasites on left side
+sum(diplostomum_eyes_excl_lenses$left)
+#total number of parasites on right side
+sum(diplostomum_eyes_excl_lenses$right)
+#ratio
+sum(diplostomum_eyes_excl_lenses$left) / sum(diplostomum_eyes_excl_lenses$right)
+```
+However, this slight left bias in the pooled data, doesn't necessarily mean that we would expect to find a left bias in most hosts. The p-value for the heterogeneity G-test is highly significant, revealing that the proportions of metacercariae in the left and right eyes varies from host to host. The individual G-test identifies which of the hosts have asymmetrical parasite distributions. Here are the results for the first ten hosts:
+```{r}
+head(results$hosts, 10)
+```
+The seven columns of the above data.frame are:
+
+* **Host** - host identifier
+* **Left** - count of parasites on left side
+* **Right** - count of parasites on right side
+* **G** - Individual G-statistic
+* **p** - p-value
+* **BH** - p-value adjusted for multiplicity using procedure of @BH1995
+* **Holm** - p-value adjusted for multiplicity using the procedure of @Holm1979
+
+The raw p-value has to be adjusted for multiplicity, because an individual G-test is applied to each host. If the null hypothesis of symmetry is true for all 50 hosts, at a significance level of 5% the probability of getting at least one Type I error (false rejection of the null hypothesis) is $1-(1-0.05)^{50} = 0.923$; the expected number of significant results obtained purely by chance would be $50 \times 0.05 = 2.5$. Holm's procedure controls the familywise error rate (FWER), i.e. the probability of a single Type I error. However, guarding against a single Type I error will be unnecessarily conservative for many studies, especially those surveying a large number of hosts. If a small number of false positives among the set of rejected null hypotheses can be tolerated, then it will be preferable to control the false discovery rate (FDR) using the procedure of @BH1995.
+
+At the conventional significance level of 5%, Holm's procedure finds 11 of the 50 individual G-tests to be significant:
+```{r}
+sum(results$hosts$Holm<0.05)
+```
+
+Benjamini and Hochberg's method provides more power to detect asymmetric infections, identifying a total of 19, although one (5% of 19) of these is likely to be a false positive:
+```{r}
+sum(results$hosts$BH<0.05)
+```
+
+These asymmetric infections identified with the aid of Benjamini and Hochberg's procedure can be classified according to whether they show left or right bias:
+```{r}
+# Number of asymmetric infections showing left bias
+sum(results$hosts$BH<0.05 & results$hosts$Left>results$hosts$Right)
+# Number of asymmetric infections showing right bias
+sum(results$hosts$BH<0.05 & results$hosts$Right>results$hosts$Left)
+```
+
+We conclude that *Diplostomum* spp. infections of the eyes (excluding the lenses) show bilateral asymmetry in a large proportion of the sampled ruffe. Moreoever, the bias is inconsistent, with parasites favoring the left eye in some hosts and the right in others.
+
+For visualization the proportion of parasites in each eye can be expressed as a binary log transformed ratio. These ratios can be plotted as a histogram:
+```{r, fig.show='hold'}
+
+plotHistogram(diplostomum_eyes_excl_lenses, nBreaks=20, main="Histogram")
+```
+
+Alternatively, these ratios can be combined with corresponding p-values from individual G-tests in a volcano plot:
+```{r, fig.show='hold'}
+plotVolcano(diplostomum_eyes_excl_lenses, test="G", pAdj="BH", sigThresh=0.1,
+main="Volcano Plot")
+```
+
+The dashed horizontal line in the volcano plot represents the chosen p-value threshold. Parasite distributions deviating significantly from symmetry are shown as red squares, whereas those not differing significantly from a 1:1 ratio are represented by blue circles.
+
+###Infections of the lens of the eye
+The second dataset comprises observations on the distribution of *Diplostomum* spp. metacercariae in the lenses of the eyes of the ruffe. Here are the data for the first ten hosts:
+```{r}
+head(diplostomum_lenses, 10)
+```
+Note that the first eight hosts are not infected. The total number of ruffe with *Diplostomum* spp. infection of the lens is:
+```{r}
+sum(diplostomum_lenses$left>0 | diplostomum_lenses$right>0)
+```
+
+G-tests involve logarithmic transformation and so cannot be applied to counts of zero, as found in this dataset. Furthermore, G-tests are not recommended when counts are below ten. The g.test function will ignore uninfected hosts in this dataset, but will raise an error, because some hosts only have an infection in one eye. In this situation, binomial exact test should be used instead:
+```{r}
+results <- eb.test(diplostomum_lenses)
+# pooled test p-value
+results$pooled
+# results for the first ten infected hosts
+head(results$hosts, 10)
+# smallest FDR adjusted p-value for an individual host
+min(results$hosts$BH)
+```
+No evidence of asymmetry in lens infections was found by either the pooled test or in the tests of the individual host infections. Note that the eb.test function restricted analysis to the 31 infected hosts:
+```{r}
+length(results$hosts[,1])
+```
+
+
+
+## Further examples
+Here are further examples of the results returned from replicated G-tests of goodness-of-fit under different scenarios. Simulated datasets have been generated for parasitic infections showing:
+
+1. symmetry
+2. left bias with the left:right ratio varying between hosts
+3. left bias with the left:right ratio similar in all hosts
+4. asymmetry with inconsistent bias; left bias in some hosts and right in others
+
+###Symmetry
+```{r}
+g.test(simulated_symmetrical_infection)
+```
+
+In this simulated dataset there are similar numbers of parasites on each side. Pooled, heterogeneity and total G-test statistics are not significant at $\alpha = 0.05$. Individual G-tests show that parasite distributions do not differ from symmetry in any of the ten hosts.
+
+###Left bias with the left:right ratio varying between hosts
+```{r}
+g.test(simulated_left_bias_heterogeneous_proportions)
+```
+
+In this example there are more parasites on the left than the right in every host. Furthermore, the proportion of parasites on the left and right sides varies betweeen hosts. For example, in host 1 there are three times as many parasites on the left than on the right, whereas in host 3 the ratio is approximately 1.6:1.
+
+Pooled, heterogeneity and total G-test statistics are all highly significant (p<0.001).
+
+* A significant total G-test indicates that overall the parasite distributions deviate from symmetry in some way.
+* A significant pooled G-test shows that the sum of the counts of the parasites from the left side of hosts differs from the sum of the counts of the parasites from the right side of hosts.
+* A significant heterogeneity G-test reveals that the proportion of parasites found on the left and right sides, varies from host to host.
+
+Individual G-tests demonstrate a highly significant (FDR corrected p-value < 0.00001) difference between the numbers of parasites found on the left and right sides in all 10 hosts.
+
+###Left bias with the left:right ratio similar in all hosts
+```{r}
+g.test(simulated_left_bias_homogeneous_proportions)
+```
+
+Similar to the previous data-set, this example also shows a left-bias. However, in this example the ratio of the number of parasites on the left side to the number on the right is aproximately 2:1 in all hosts.
+
+The pooled and total G-test statistics are highly significant. However, the heterogeneity G-test statistic is not significant at $\alpha = 0.05$.
+
+* A significant total G-test indicates that overall the parasite distributions deviate from symmetry in some way.
+* A significant pooled G-test shows that the sum of the counts of the parasites from the left side of hosts differs from the sum of the counts of the parasites from the right side of hosts.
+* A non-significant heterogeneity G-test suggests that the proportion of parasites found on the left and right sides does not vary between hosts.
+
+All individual G-tests are significant (FDR corrected p-value < 0.001), demonstrating that the left bias occurs in all 10 hosts.
+
+###Asymmetry with inconsistent bias
+```{r}
+g.test(simulated_asymmetry_inconsistent_bias)
+```
+
+In this example some hosts have many more parasites on the left than right, whereas others have more on the right than left.
+
+The hetereogeneity and total G-test statistics are both highly significant, but the pooled G-test is not significant at $\alpha = 0.05$.
+
+* A significant total G-test statistic indicates that overall the parasite distributions deviate from symmetry in some way.
+* A non-significant pooled G-test shows there is no evidence of bias towards one side.
+* A significant heterogeneity G-test reveals that the proportion of parasites on the left and right sides varies from host to host.
+
+If we choose an FDR adjusted p-value of 0.05 as our significance threshold, we find five of ten hosts have asymmetric distributions of parasites. Of these five, three show a left bias and two a right bias. This is an example of inconsistent bias.
+
+##References

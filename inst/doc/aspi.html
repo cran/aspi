@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Matt Wayland" />
+
+<meta name="date" content="2016-09-20" />
+
+<title>ASPI - Analysis of Symmetry of Parasitic Infections</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ASPI - Analysis of Symmetry of Parasitic Infections</h1>
+<h4 class="author"><em>Matt Wayland</em></h4>
+<h4 class="date"><em>2016-09-20</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>When parasites invade paired structures of their host non-randomly, the resulting asymmetry may have both pathological and ecological significance. ASPI has been developed to facilitate the detection and visualization of asymmetric infections. ASPI can detect both consistent bias towards one side, and inconsistent bias in which the left side is favored in some hosts and the right in others. In this vignette ASPI is demonstrated on both observed and simulated parasite distributions. The first step is to load the aspi library:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(aspi)</code></pre></div>
+</div>
+<div id="detection-of-deviation-from-symmetry" class="section level2">
+<h2>Detection of deviation from symmetry</h2>
+<div id="replicated-g-tests-of-goodness-of-fit" class="section level3">
+<h3>Replicated G-tests of goodness-of-fit</h3>
+<p>Replicated G-tests of goodness-of-fit <span class="citation">(Sokal and Rohlf 1995)</span> provide a comprehensive analysis of deviations from bilateral symmetry. This procedure computes four different G-statistics:</p>
+<ul>
+<li><strong>Total G</strong> - tests null hypothesis that overall the parasite distributions in all individual hosts do not depart from symmetry.</li>
+<li><strong>Pooled G</strong> - evaluates the null hypothesis that the ratio of the total number of parasites from each side does not differ from symmetry.</li>
+<li><strong>Heterogeneity G</strong> - examines the null hypothesis that the left:right ratios are the same in all individual hosts.</li>
+<li><strong>Individual G</strong> - used to identify which individual hosts have asymmetrical parasite distributions.</li>
+</ul>
+</div>
+<div id="binomial-exact-test" class="section level3">
+<h3>Binomial exact test</h3>
+<p>G-tests involve logarithmic transformation and so cannot be applied to counts of zero. Moreover, G-tests are not recommended when counts are below 10. For this situation, binomial exact tests are provided as an alternative, but are limited to testing two null hypotheses:</p>
+<ul>
+<li>the ratio of the total number of parasites on each side doesn’t differ from 1:1 (equivalent to the pooled G-test);</li>
+<li>the distribution of parasites in an individual host is symmetrical.</li>
+</ul>
+</div>
+</div>
+<div id="trematode-infections-in-fish-eyes" class="section level2">
+<h2>Trematode infections in fish eyes</h2>
+<p><em>Diplostomum</em> spp. (Trematoda) are common parasites of freshwater fishes. Here we use two datasets describing the distribution of <em>Diplostomum</em> spp. metacercariae in the eyes of fifty ruffe, <em>Gymnocephalus cernuus</em>.</p>
+<div id="infections-of-the-eye-excluding-lens" class="section level3">
+<h3>Infections of the eye excluding lens</h3>
+<p>The first dataset comprises the numbers of metacercariae found in each eye, excluding the lens (i.e. the choroid, retina and humors). The dataset is formatted as a data.frame with two columns; the first column is the number of parasites found in the left eye and the 2nd column is the number of parasites found in the right eye. Here are the data for the first ten hosts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(diplostomum_eyes_excl_lenses, <span class="dv">10</span>)</code></pre></div>
+<pre><code>##    left right
+## 1    86    99
+## 2   131   199
+## 3   195   133
+## 4   128   167
+## 5   192   211
+## 6   212   278
+## 7   451   474
+## 8   323   312
+## 9   394   305
+## 10  222   270</code></pre>
+<p>The row.names are host IDs. To detect bilateral asymmetry we apply replicated G-tests of goodness-of-fit:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span><span class="kw">g.test</span>(diplostomum_eyes_excl_lenses)</code></pre></div>
+<p>First we inspect the pooled, heterogeneity and total G-statistics:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results$summary</code></pre></div>
+<pre><code>##            Test df          G            p
+## 1        Pooled  1   8.189282 4.213860e-03
+## 2 Heterogeneity 49 437.827514 7.448961e-64
+## 3         Total 50 446.016796 5.819378e-65</code></pre>
+<p>The total G-test statistic is highly significant and so the null hypothesis of overall symmetry can be rejected. The pooled G-test (p-value = 0.004) suggests that the total number of parasites from each side differs from symmetry. Let’s calculate the total number of parasites found on each side:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#total number of parasites on left side</span>
+<span class="kw">sum</span>(diplostomum_eyes_excl_lenses$left)</code></pre></div>
+<pre><code>## [1] 15026</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#total number of parasites on right side</span>
+<span class="kw">sum</span>(diplostomum_eyes_excl_lenses$right)</code></pre></div>
+<pre><code>## [1] 14534</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#ratio</span>
+<span class="kw">sum</span>(diplostomum_eyes_excl_lenses$left) /<span class="st"> </span><span class="kw">sum</span>(diplostomum_eyes_excl_lenses$right)</code></pre></div>
+<pre><code>## [1] 1.033852</code></pre>
+<p>However, this slight left bias in the pooled data, doesn’t necessarily mean that we would expect to find a left bias in most hosts. The p-value for the heterogeneity G-test is highly significant, revealing that the proportions of metacercariae in the left and right eyes varies from host to host. The individual G-test identifies which of the hosts have asymmetrical parasite distributions. Here are the results for the first ten hosts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(results$hosts, <span class="dv">10</span>)</code></pre></div>
+<pre><code>##    Host Left Right          G            p          BH        Holm
+## 1     1   86    99  0.9142668 0.3389848373 0.452402486 1.000000000
+## 2     2  131   199 14.1130061 0.0001721493 0.001434578 0.007746721
+## 3     3  195   133 11.7903193 0.0005953952 0.003307751 0.025006599
+## 4     4  128   167  5.1710572 0.0229662351 0.055002553 0.711953287
+## 5     5  192   211  0.8961138 0.3438258892 0.452402486 1.000000000
+## 6     6  212   278  8.9168733 0.0028254783 0.008310230 0.096066262
+## 7     7  451   474  0.5719508 0.4494847458 0.548152129 1.000000000
+## 8     8  323   312  0.1905607 0.6624503507 0.690052449 1.000000000
+## 9     9  394   305 11.3627210 0.0007493296 0.003746648 0.030722515
+## 10   10  222   270  4.6903841 0.0303318672 0.068936062 0.879624148</code></pre>
+<p>The seven columns of the above data.frame are:</p>
+<ul>
+<li><strong>Host</strong> - host identifier</li>
+<li><strong>Left</strong> - count of parasites on left side</li>
+<li><strong>Right</strong> - count of parasites on right side</li>
+<li><strong>G</strong> - Individual G-statistic</li>
+<li><strong>p</strong> - p-value</li>
+<li><strong>BH</strong> - p-value adjusted for multiplicity using procedure of <span class="citation">Benjamini and Hochberg (1995)</span></li>
+<li><strong>Holm</strong> - p-value adjusted for multiplicity using the procedure of <span class="citation">Holm (1979)</span></li>
+</ul>
+<p>The raw p-value has to be adjusted for multiplicity, because an individual G-test is applied to each host. If the null hypothesis of symmetry is true for all 50 hosts, at a significance level of 5% the probability of getting at least one Type I error (false rejection of the null hypothesis) is <span class="math inline">\(1-(1-0.05)^{50} = 0.923\)</span>; the expected number of significant results obtained purely by chance would be <span class="math inline">\(50 \times 0.05 = 2.5\)</span>. Holm’s procedure controls the familywise error rate (FWER), i.e. the probability of a single Type I error. However, guarding against a single Type I error will be unnecessarily conservative for many studies, especially those surveying a large number of hosts. If a small number of false positives among the set of rejected null hypotheses can be tolerated, then it will be preferable to control the false discovery rate (FDR) using the procedure of <span class="citation">Benjamini and Hochberg (1995)</span>.</p>
+<p>At the conventional significance level of 5%, Holm’s procedure finds 11 of the 50 individual G-tests to be significant:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(results$hosts$Holm&lt;<span class="fl">0.05</span>)</code></pre></div>
+<pre><code>## [1] 11</code></pre>
+<p>Benjamini and Hochberg’s method provides more power to detect asymmetric infections, identifying a total of 19, although one (5% of 19) of these is likely to be a false positive:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(results$hosts$BH&lt;<span class="fl">0.05</span>)</code></pre></div>
+<pre><code>## [1] 19</code></pre>
+<p>These asymmetric infections identified with the aid of Benjamini and Hochberg’s procedure can be classified according to whether they show left or right bias:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Number of asymmetric infections showing left bias</span>
+<span class="kw">sum</span>(results$hosts$BH&lt;<span class="fl">0.05</span> &amp;<span class="st"> </span>results$hosts$Left&gt;results$hosts$Right)</code></pre></div>
+<pre><code>## [1] 11</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Number of asymmetric infections showing right bias</span>
+<span class="kw">sum</span>(results$hosts$BH&lt;<span class="fl">0.05</span> &amp;<span class="st"> </span>results$hosts$Right&gt;results$hosts$Left)</code></pre></div>
+<pre><code>## [1] 8</code></pre>
+<p>We conclude that <em>Diplostomum</em> spp. infections of the eyes (excluding the lenses) show bilateral asymmetry in a large proportion of the sampled ruffe. Moreoever, the bias is inconsistent, with parasites favoring the left eye in some hosts and the right in others.</p>
+<p>For visualization the proportion of parasites in each eye can be expressed as a binary log transformed ratio. These ratios can be plotted as a histogram:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotHistogram</span>(diplostomum_eyes_excl_lenses, <span class="dt">nBreaks=</span><span class="dv">20</span>, <span class="dt">main=</span><span class="st">&quot;Histogram&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Alternatively, these ratios can be combined with corresponding p-values from individual G-tests in a volcano plot:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plotVolcano</span>(diplostomum_eyes_excl_lenses, <span class="dt">test=</span><span class="st">&quot;G&quot;</span>, <span class="dt">pAdj=</span><span class="st">&quot;BH&quot;</span>, <span class="dt">sigThresh=</span><span class="fl">0.1</span>,
+<span class="dt">main=</span><span class="st">&quot;Volcano Plot&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The dashed horizontal line in the volcano plot represents the chosen p-value threshold. Parasite distributions deviating significantly from symmetry are shown as red squares, whereas those not differing significantly from a 1:1 ratio are represented by blue circles.</p>
+</div>
+<div id="infections-of-the-lens-of-the-eye" class="section level3">
+<h3>Infections of the lens of the eye</h3>
+<p>The second dataset comprises observations on the distribution of <em>Diplostomum</em> spp. metacercariae in the lenses of the eyes of the ruffe. Here are the data for the first ten hosts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(diplostomum_lenses, <span class="dv">10</span>)</code></pre></div>
+<pre><code>##    left right
+## 1     0     0
+## 2     0     0
+## 3     0     0
+## 4     0     0
+## 5     0     0
+## 6     0     0
+## 7     0     0
+## 8     0     0
+## 9     6     5
+## 10    0     2</code></pre>
+<p>Note that the first eight hosts are not infected. The total number of ruffe with <em>Diplostomum</em> spp. infection of the lens is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(diplostomum_lenses$left&gt;<span class="dv">0</span> |<span class="st"> </span>diplostomum_lenses$right&gt;<span class="dv">0</span>)</code></pre></div>
+<pre><code>## [1] 31</code></pre>
+<p>G-tests involve logarithmic transformation and so cannot be applied to counts of zero, as found in this dataset. Furthermore, G-tests are not recommended when counts are below ten. The g.test function will ignore uninfected hosts in this dataset, but will raise an error, because some hosts only have an infection in one eye. In this situation, binomial exact test should be used instead:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">results &lt;-<span class="st"> </span><span class="kw">eb.test</span>(diplostomum_lenses)
+<span class="co"># pooled test p-value</span>
+results$pooled</code></pre></div>
+<pre><code>## [1] 0.8439127</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># results for the first ten infected hosts</span>
+<span class="kw">head</span>(results$hosts, <span class="dv">10</span>)</code></pre></div>
+<pre><code>##    Host Left Right         p        BH     Holm
+## 9     9    6     5 1.0000000 1.0000000 1.000000
+## 10   10    0     2 0.5000000 1.0000000 1.000000
+## 28   28    0     3 0.2500000 0.9687500 1.000000
+## 46   46   11     8 0.6476059 1.0000000 1.000000
+## 15   15    0     1 1.0000000 1.0000000 1.000000
+## 16   16    0     7 0.0156250 0.4843750 0.484375
+## 17   17    3     2 1.0000000 1.0000000 1.000000
+## 18   18    0     5 0.0625000 0.5535714 1.000000
+## 19   19    4     7 0.5488281 1.0000000 1.000000
+## 20   20    8     2 0.1093750 0.5535714 1.000000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># smallest FDR adjusted p-value for an individual host</span>
+<span class="kw">min</span>(results$hosts$BH)</code></pre></div>
+<pre><code>## [1] 0.484375</code></pre>
+<p>No evidence of asymmetry in lens infections was found by either the pooled test or in the tests of the individual host infections. Note that the eb.test function restricted analysis to the 31 infected hosts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(results$hosts[,<span class="dv">1</span>])</code></pre></div>
+<pre><code>## [1] 31</code></pre>
+</div>
+</div>
+<div id="further-examples" class="section level2">
+<h2>Further examples</h2>
+<p>Here are further examples of the results returned from replicated G-tests of goodness-of-fit under different scenarios. Simulated datasets have been generated for parasitic infections showing:</p>
+<ol style="list-style-type: decimal">
+<li>symmetry</li>
+<li>left bias with the left:right ratio varying between hosts</li>
+<li>left bias with the left:right ratio similar in all hosts</li>
+<li>asymmetry with inconsistent bias; left bias in some hosts and right in others</li>
+</ol>
+<div id="symmetry" class="section level3">
+<h3>Symmetry</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">g.test</span>(simulated_symmetrical_infection)</code></pre></div>
+<pre><code>## $summary
+##            Test df         G         p
+## 1        Pooled  1 0.1463309 0.7020666
+## 2 Heterogeneity  9 8.7916316 0.4567267
+## 3         Total 10 8.9379625 0.5380011
+## 
+## $hosts
+##    Host Left Right           G         p        BH Holm
+## 1     1   86    89 0.051431091 0.8205915 0.9117684    1
+## 2     2   96   112 1.231985889 0.2670212 0.5699383    1
+## 3     3   92    88 0.088896206 0.7655851 0.9117684    1
+## 4     4  112   104 0.296364074 0.5861708 0.8373869    1
+## 5     5   90   109 1.816836608 0.1776903 0.5699383    1
+## 6     6  117    96 2.073789831 0.1498488 0.5699383    1
+## 7     7   98    97 0.005128228 0.9429110 0.9429110    1
+## 8     8  106    91 1.143238156 0.2849691 0.5699383    1
+## 9     9   98   108 0.485627728 0.4858842 0.8098070    1
+## 10   10   84   102 1.744664663 0.1865489 0.5699383    1</code></pre>
+<p>In this simulated dataset there are similar numbers of parasites on each side. Pooled, heterogeneity and total G-test statistics are not significant at <span class="math inline">\(\alpha = 0.05\)</span>. Individual G-tests show that parasite distributions do not differ from symmetry in any of the ten hosts.</p>
+</div>
+<div id="left-bias-with-the-leftright-ratio-varying-between-hosts" class="section level3">
+<h3>Left bias with the left:right ratio varying between hosts</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">g.test</span>(simulated_left_bias_heterogeneous_proportions)</code></pre></div>
+<pre><code>## $summary
+##            Test df         G            p
+## 1        Pooled  1 382.12807 4.282032e-85
+## 2 Heterogeneity  9  33.71135 1.003471e-04
+## 3         Total 10 415.83942 3.993780e-83
+## 
+## $hosts
+##    Host Left Right        G            p           BH         Holm
+## 1     1  165    53 60.38527 7.799434e-15 3.899717e-14 7.019491e-14
+## 2     2  235   126 33.43061 7.385238e-09 1.055034e-08 2.954095e-08
+## 3     3  203   128 17.14244 3.467862e-05 3.467862e-05 3.467862e-05
+## 4     4  219   101 44.55652 2.471191e-11 6.177978e-11 1.729834e-10
+## 5     5  246   144 26.98969 2.045435e-07 2.556794e-07 6.136306e-07
+## 6     6  233   110 45.10548 1.867023e-11 6.177978e-11 1.493619e-10
+## 7     7  189    52 82.73454 9.384707e-20 9.384707e-19 9.384707e-19
+## 8     8  193    84 44.07347 3.162780e-11 6.325559e-11 1.897668e-10
+## 9     9  170    97 20.21521 6.920056e-06 7.688951e-06 1.384011e-05
+## 10   10  199    91 41.20618 1.369887e-10 2.283146e-10 6.849437e-10</code></pre>
+<p>In this example there are more parasites on the left than the right in every host. Furthermore, the proportion of parasites on the left and right sides varies betweeen hosts. For example, in host 1 there are three times as many parasites on the left than on the right, whereas in host 3 the ratio is approximately 1.6:1.</p>
+<p>Pooled, heterogeneity and total G-test statistics are all highly significant (p&lt;0.001).</p>
+<ul>
+<li>A significant total G-test indicates that overall the parasite distributions deviate from symmetry in some way.</li>
+<li>A significant pooled G-test shows that the sum of the counts of the parasites from the left side of hosts differs from the sum of the counts of the parasites from the right side of hosts.</li>
+<li>A significant heterogeneity G-test reveals that the proportion of parasites found on the left and right sides, varies from host to host.</li>
+</ul>
+<p>Individual G-tests demonstrate a highly significant (FDR corrected p-value &lt; 0.00001) difference between the numbers of parasites found on the left and right sides in all 10 hosts.</p>
+</div>
+<div id="left-bias-with-the-leftright-ratio-similar-in-all-hosts" class="section level3">
+<h3>Left bias with the left:right ratio similar in all hosts</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">g.test</span>(simulated_left_bias_homogeneous_proportions)</code></pre></div>
+<pre><code>## $summary
+##            Test df          G            p
+## 1        Pooled  1 234.461658 6.344087e-53
+## 2 Heterogeneity  9   4.050156 9.080804e-01
+## 3         Total 10 238.511814 1.406742e-45
+## 
+## $hosts
+##    Host Left Right        G            p           BH         Holm
+## 1     1  183    84 37.59896 8.689057e-10 8.689057e-09 8.689057e-09
+## 2     2  175    86 30.96600 2.625882e-08 8.752939e-08 2.100705e-07
+## 3     3  133    68 21.40251 3.722836e-06 5.318337e-06 1.553538e-05
+## 4     4   83    36 19.07854 1.254475e-05 1.568093e-05 3.763424e-05
+## 5     5  100    42 24.39720 7.838253e-07 1.567651e-06 4.773409e-06
+## 6     6   69    34 12.13336 4.952778e-04 4.952778e-04 4.952778e-04
+## 7     7  111    49 24.66557 6.819156e-07 1.567651e-06 4.773409e-06
+## 8     8  163    77 31.51256 1.981540e-08 8.752939e-08 1.783386e-07
+## 9     9  138    81 15.00783 1.070662e-04 1.189624e-04 2.141323e-04
+## 10   10  157    85 21.74927 3.107077e-06 5.178461e-06 1.553538e-05</code></pre>
+<p>Similar to the previous data-set, this example also shows a left-bias. However, in this example the ratio of the number of parasites on the left side to the number on the right is aproximately 2:1 in all hosts.</p>
+<p>The pooled and total G-test statistics are highly significant. However, the heterogeneity G-test statistic is not significant at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<ul>
+<li>A significant total G-test indicates that overall the parasite distributions deviate from symmetry in some way.</li>
+<li>A significant pooled G-test shows that the sum of the counts of the parasites from the left side of hosts differs from the sum of the counts of the parasites from the right side of hosts.</li>
+<li>A non-significant heterogeneity G-test suggests that the proportion of parasites found on the left and right sides does not vary between hosts.</li>
+</ul>
+<p>All individual G-tests are significant (FDR corrected p-value &lt; 0.001), demonstrating that the left bias occurs in all 10 hosts.</p>
+</div>
+<div id="asymmetry-with-inconsistent-bias" class="section level3">
+<h3>Asymmetry with inconsistent bias</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">g.test</span>(simulated_asymmetry_inconsistent_bias)</code></pre></div>
+<pre><code>## $summary
+##            Test df           G            p
+## 1        Pooled  1   0.0784249 7.794434e-01
+## 2 Heterogeneity  9 104.2800180 2.137462e-18
+## 3         Total 10 104.3584429 7.287066e-18
+## 
+## $hosts
+##    Host Left Right           G            p           BH         Holm
+## 1     1  105   117  0.64896489 4.204830e-01 5.256038e-01 1.000000e+00
+## 2     2  200   142  9.88395833 1.667259e-03 5.557530e-03 1.333807e-02
+## 3     3   74   195 56.42992255 5.823735e-14 5.823735e-13 5.823735e-13
+## 4     4  172   182  0.28252346 5.950520e-01 6.611689e-01 1.000000e+00
+## 5     5   88    84  0.09303164 7.603579e-01 7.603579e-01 1.000000e+00
+## 6     6  194   140  8.76897735 3.063972e-03 7.659930e-03 2.144780e-02
+## 7     7  199   166  2.98763967 8.390238e-02 1.398373e-01 4.195119e-01
+## 8     8   75   106  5.33565903 2.089344e-02 4.178688e-02 1.253606e-01
+## 9     9  157   187  2.61960554 1.055507e-01 1.507867e-01 4.222027e-01
+## 10   10  178   108 17.30816045 3.178191e-05 1.589095e-04 2.860372e-04</code></pre>
+<p>In this example some hosts have many more parasites on the left than right, whereas others have more on the right than left.</p>
+<p>The hetereogeneity and total G-test statistics are both highly significant, but the pooled G-test is not significant at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<ul>
+<li>A significant total G-test statistic indicates that overall the parasite distributions deviate from symmetry in some way.</li>
+<li>A non-significant pooled G-test shows there is no evidence of bias towards one side.</li>
+<li>A significant heterogeneity G-test reveals that the proportion of parasites on the left and right sides varies from host to host.</li>
+</ul>
+<p>If we choose an FDR adjusted p-value of 0.05 as our significance threshold, we find five of ten hosts have asymmetric distributions of parasites. Of these five, three show a left bias and two a right bias. This is an example of inconsistent bias.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-BH1995">
+<p>Benjamini, Y., and Y. Hochberg. 1995. “Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.” <em>Journal of the Royal Statistical Society B</em> 57: 289–300.</p>
+</div>
+<div id="ref-Holm1979">
+<p>Holm, S. 1979. “A Simple Sequentially Rejective Multiple Test Procedure.” <em>Scandinavian Journal of Statistics</em> 6: 65–70.</p>
+</div>
+<div id="ref-biometry">
+<p>Sokal, R.R., and F.J. Rohlf. 1995. <em>Biometry</em>. 3rd ed. New York: W.H. Freeman; Company.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
